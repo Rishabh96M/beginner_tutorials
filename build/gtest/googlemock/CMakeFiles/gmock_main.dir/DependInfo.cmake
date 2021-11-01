@@ -19,6 +19,7 @@ set(CMAKE_TARGET_DEFINITIONS_CXX
 # The include file search paths:
 set(CMAKE_CXX_TARGET_INCLUDE_PATH
   "/home/rishabh-mukund/catkin_ws/src/beginner_tutorials/include"
+  "/opt/ros/melodic/include"
   "/usr/src/googletest/googlemock/include"
   "/usr/src/googletest/googlemock"
   "/usr/src/googletest/googletest/include"
