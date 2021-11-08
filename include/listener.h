@@ -24,6 +24,6 @@
  * @param msg message received
  */
 
-void pubSubCallback(const std_msgs::String::ConstPtr& msg);
+void chatterCallback(const std_msgs::String::ConstPtr& msg);
 
 #endif  // INCLUDE_LISTENER_H_

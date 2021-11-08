@@ -1,5 +1,5 @@
-/*
- * Copyright (C) 2008, Morgan Quigley and Willow Garage, Inc.
+/**
+ * Copyright (c) 2021 Rishabh Mukund
  *
  * Redistribution and use in source and binary forms, with or without
  * modification, are permitted provided that the following conditions are met:
@@ -24,20 +24,36 @@
  * ARISING IN ANY WAY OUT OF THE USE OF THIS SOFTWARE, EVEN IF ADVISED OF THE
  * POSSIBILITY OF SUCH DAMAGE.
  */
-// %Tag(FULLTEXT)%
-// %Tag(ROS_HEADER)%
 
 #include <sstream>
 #include "ros/ros.h"
-// %EndTag(ROS_HEADER)%
-// %Tag(MSG_HEADER)%
 #include "std_msgs/String.h"
-// %EndTag(MSG_HEADER)%
+#include "talker.h"
+#include "beginner_tutorials/string.h"
 
+// Default string
+extern std::string new_string = "Default string";
 
 /**
- * This tutorial demonstrates simple sending of messages over the ROS system.
+ * @brief A function that provides a service of changing the output string of the publisher
+ * 
+ * @param req service request
+ * @param res service response
+ * @return returns true once it changes the string
  */
+bool changeOutput(beginner_tutorials::string::Request  &req,
+         beginner_tutorials::string::Response &res) {
+  new_string = req.new_string;
+
+  ROS_DEBUG_STREAM("String was changed to : " << new_string.c_str());
+  res.res_s = req.new_string;
+  return true;
+}
+
+/**
+ * A simple ros publisher and subscriber.
+ */
+
 int main(int argc, char **argv) {
   /**
    * The ros::init() function needs to see argc and argv so that it can perform
@@ -46,21 +62,15 @@ int main(int argc, char **argv) {
    * remappings directly, but for most command-line programs, passing argc and argv is
    * the easiest way to do it.  The third argument to init() is the name of the node.
    *
-   * You must call one of the versions of ros::init() before using any other
-   * part of the ROS system.
    */
-// %Tag(INIT)%
   ros::init(argc, argv, "talker");
-// %EndTag(INIT)%
 
   /**
    * NodeHandle is the main access point to communications with the ROS system.
    * The first NodeHandle constructed will fully initialize this node, and the last
    * NodeHandle destructed will close down the node.
    */
-// %Tag(NODEHANDLE)%
   ros::NodeHandle n;
-// %EndTag(NODEHANDLE)%
 
   /**
    * The advertise() function is how you tell ROS that you want to
@@ -79,36 +89,50 @@ int main(int argc, char **argv) {
    * than we can send them, the number here specifies how many messages to
    * buffer up before throwing some away.
    */
-// %Tag(PUBLISHER)%
   ros::Publisher chatter_pub = n.advertise<std_msgs::String>("chatter", 1000);
-// %EndTag(PUBLISHER)%
 
-// %Tag(LOOP_RATE)%
-  ros::Rate loop_rate(10);
-// %EndTag(LOOP_RATE)%
+  // service created to change the output string
+  ros::ServiceServer service =
+  n.advertiseService("change_output", changeOutput);
+  int rate = 10;
+
+  rate = atoi(argv[1]);
+  // Checks if the rate is greater than 100
+  if ( rate >= 100 ) {
+    ROS_WARN_STREAM("high frequency, changing to 10");
+    rate = 10;
+  }
+  // Checks if the rate is equal to 0
+  if ( rate == 0 ) {
+    ROS_FATAL("low frequency, changing to 10");
+    rate = 10;
+  }
+  // Checks if the rate is negative
+  if ( rate < 0 ) {
+    ROS_ERROR("wrong frequency, changing to 10");
+    rate = 10;
+  }
+
+  // Set the frequency rate
+  ROS_DEBUG_STREAM("Frequency set to : " << rate);
+  ros::Rate loop_rate(rate);
 
   /**
    * A count of how many messages we have sent. This is used to create
    * a unique string for each message.
    */
-// %Tag(ROS_OK)%
   int count = 0;
   while (ros::ok()) {
-// %EndTag(ROS_OK)%
     /**
      * This is a message object. You stuff it with data, and then publish it.
      */
-// %Tag(FILL_MESSAGE)%
-    std_msgs::String msg;
+     std_msgs::String msg;
 
     std::stringstream ss;
-    ss << "This is not a robot " << count;
+    ss << new_string;
     msg.data = ss.str();
-// %EndTag(FILL_MESSAGE)%
 
-// %Tag(ROSCONSOLE)%
-    ROS_INFO("%s", msg.data.c_str());
-// %EndTag(ROSCONSOLE)%
+    // ROS_INFO_STREAM(msg.data.c_str());
 
     /**
      * The publish() function is how you send messages. The parameter
@@ -116,21 +140,13 @@ int main(int argc, char **argv) {
      * given as a template parameter to the advertise<>() call, as was done
      * in the constructor above.
      */
-// %Tag(PUBLISH)%
     chatter_pub.publish(msg);
-// %EndTag(PUBLISH)%
-
-// %Tag(SPINONCE)%
     ros::spinOnce();
-// %EndTag(SPINONCE)%
 
-// %Tag(RATE_SLEEP)%
     loop_rate.sleep();
-// %EndTag(RATE_SLEEP)%
     ++count;
   }
 
 
   return 0;
 }
-// %EndTag(FULLTEXT)%
