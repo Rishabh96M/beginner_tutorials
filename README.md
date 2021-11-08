@@ -48,3 +48,14 @@ Run the following command in the src directory of the project to generate cppche
     cppcheck *
 ```
 
+## Steps to run the service for changing the output string
+
+With the talker and lisener running, in a terminal run :
+```
+     rosservice call /change_output "New Message"
+```
+  
+<img alt="logs" src="results/logs.png" width="75%" />
+
+*Fig 1 :  Logs*
+
