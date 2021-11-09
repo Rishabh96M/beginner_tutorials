@@ -57,7 +57,11 @@ rosservice call /change_output "message"
 
 ## Steps to start the nodes using the launch file
 
-With the talker and lisener running, in a terminal run :
+Run the following in a new terminal:
 ```
-roslaunch launch/chatter.launch rate:=10
+source devel/setup.bash
+roslaunch beginner_tutorials chatter.launch rate:=10
 ```
+<img alt="logs" src="results/rqt_console.png" width="75%" />
+
+*Screenshot of Logs*
