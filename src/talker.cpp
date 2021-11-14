@@ -26,7 +26,7 @@
  */
 
 #include <sstream>
-#include "ros/ros.h"
+#include <ros/ros.h>
 #include "std_msgs/String.h"
 #include "talker.h"
 #include "beginner_tutorials/string.h"
@@ -49,16 +49,6 @@ bool changeOutput(beginner_tutorials::string::Request  &req,
   ROS_DEBUG_STREAM("String was changed to : " << message.c_str());
   res.res_s = req.new_string;
   return true;
-}
-
-void poseCallback(const turtlesim::PoseConstPtr& msg){
-  static tf::TransformBroadcaster br;
-  tf::Transform talk;
-  talk.setOrigin( tf::Vector3(msg->x, msg->y, 0.0) );
-  tf::Quaternion q;
-  q.setRPY(0, 0, msg->theta);
-  talk.setRotation(q);
-  br.sendTransform(tf::StampedTransform(talk, ros::Time::now(), "world", turtle_name));
 }
 
 /**
@@ -127,8 +117,7 @@ int main(int argc, char **argv) {
   ROS_DEBUG_STREAM("Frequency set to : " << freq);
   ros::Rate loop_rate(freq);
 
-  ros::Subscriber sub = node.subscribe("robot/pose", 10, &poseCallback);
-
+  tf::TransformBroadcaster br;
   /**
    * A count of how many messages we have sent. This is used to create
    * a unique string for each message.
@@ -150,6 +139,15 @@ int main(int argc, char **argv) {
      * in the constructor above.
      */
     chatter_pub.publish(msg);
+
+    tf::Transform t;
+    t.setOrigin( tf::Vector3(0.0, 10.0, 0.0) );
+    tf::Quaternion q;
+    q.setRPY(0, 0, 90);
+    t.setRotation(q);
+    br.sendTransform(tf::StampedTransform(t, ros::Time::now(), "world", "talk"));
+
+
     ros::spinOnce();
 
     loop_rate.sleep();
