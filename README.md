@@ -26,7 +26,7 @@ This will initialize ROS
 In a new terminal run : 
 ```
 source devel/setup.bash
-rosrun beginner_tutorials talker
+rosrun beginner_tutorials talker <freq>
 ```
 This commands will start the publisher to a topic
 
@@ -40,7 +40,7 @@ This command will start the subscriber to that topic
 
 ## Running cpplint & cppcheck tests
 Run the following command in the src directory of the project to generate cpplint results in **results** folder
- ```
+```
 cpplint *
 ```
 Run the following command in the src directory of the project to generate cppcheck results in **results** folder
@@ -52,6 +52,7 @@ cppcheck *
 
 With the talker and lisener running, in a terminal run :
 ```
+source devel/setup.bash 
 rosservice call /change_output "message"
 ```
 

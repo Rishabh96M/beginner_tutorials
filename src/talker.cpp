@@ -32,7 +32,7 @@
 #include "beginner_tutorials/string.h"
 
 // Default string
-extern std::string message = "This is a robot!!";
+std::string message = "This is a robot!!";
 
 /**
  * @brief A function that provides a service of changing the output string of the publisher
@@ -93,8 +93,8 @@ int main(int argc, char **argv) {
 
   // service created to change the output string
   ros::ServiceServer service = n.advertiseService("change_output", changeOutput);
-  int freq = 10;
 
+  int freq = 10;
   freq = atoi(argv[1]);
   /// Checks if the rate is greater than 100
   if ( freq >= 100 ) {
@@ -128,7 +128,7 @@ int main(int argc, char **argv) {
     ss << message;
     msg.data = ss.str();
 
-    // ROS_INFO_STREAM(msg.data.c_str());
+     ROS_INFO_STREAM(msg.data.c_str());
 
     /**
      * The publish() function is how you send messages. The parameter

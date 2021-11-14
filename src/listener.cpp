@@ -34,7 +34,7 @@
  * @param: (String) received message object
  */
 void chatterCallback(const std_msgs::String::ConstPtr& msg) {
-  ROS_DEBUG_STREAM("message recieved");
+  ROS_DEBUG_STREAM("message received");
   ROS_INFO_STREAM("I heard: "  << msg->data.c_str());
 }
 /**
