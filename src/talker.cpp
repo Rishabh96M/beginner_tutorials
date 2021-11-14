@@ -30,6 +30,7 @@
 #include "std_msgs/String.h"
 #include "talker.h"
 #include "beginner_tutorials/string.h"
+#include <tf/transform_broadcaster.h>
 
 // Default string
 std::string message = "This is a robot!!";
@@ -48,6 +49,16 @@ bool changeOutput(beginner_tutorials::string::Request  &req,
   ROS_DEBUG_STREAM("String was changed to : " << message.c_str());
   res.res_s = req.new_string;
   return true;
+}
+
+void poseCallback(const turtlesim::PoseConstPtr& msg){
+  static tf::TransformBroadcaster br;
+  tf::Transform talk;
+  talk.setOrigin( tf::Vector3(msg->x, msg->y, 0.0) );
+  tf::Quaternion q;
+  q.setRPY(0, 0, msg->theta);
+  talk.setRotation(q);
+  br.sendTransform(tf::StampedTransform(talk, ros::Time::now(), "world", turtle_name));
 }
 
 /**
@@ -115,6 +126,8 @@ int main(int argc, char **argv) {
   /// Set the frequency rate
   ROS_DEBUG_STREAM("Frequency set to : " << freq);
   ros::Rate loop_rate(freq);
+
+  ros::Subscriber sub = node.subscribe("robot/pose", 10, &poseCallback);
 
   /**
    * A count of how many messages we have sent. This is used to create
