@@ -140,12 +140,12 @@ int main(int argc, char **argv) {
      */
     chatter_pub.publish(msg);
 
-//    tf::Transform t;
-//    t.setOrigin( tf::Vector3(0.0, 10.0, 0.0) );
-//    tf::Quaternion q;
-//    q.setRPY(0, 0, 90);
-//    t.setRotation(q);
-//    br.sendTransform(tf::StampedTransform(t, ros::Time::now(), "world", "talk"));
+    tf::Transform t;
+    t.setOrigin( tf::Vector3(0.0, 10.0, 0.0) );
+    tf::Quaternion q;
+    q.setRPY(0, 0, 90);
+    t.setRotation(q);
+    br.sendTransform(tf::StampedTransform(t, ros::Time::now(), "world", "talk"));
 
 
     ros::spinOnce();
