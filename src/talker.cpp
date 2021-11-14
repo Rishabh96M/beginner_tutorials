@@ -25,15 +25,15 @@
  * POSSIBILITY OF SUCH DAMAGE.
  */
 
-#include <sstream>
-#include <ros/ros.h>
-#include "std_msgs/String.h"
-#include "talker.h"
-#include "beginner_tutorials/string.h"
+#include <talker.h>
 #include <tf/transform_broadcaster.h>
+#include <ros/ros.h>
+#include <sstream>
+#include "std_msgs/String.h"
+#include "beginner_tutorials/string.h"
 
 // Default string
-std::string message = "This is a robot!!";
+extern std::string message = "This is a robot!!";
 
 /**
  * @brief A function that provides a service of changing the output string of the publisher
@@ -42,7 +42,7 @@ std::string message = "This is a robot!!";
  * @param res service response
  * @return returns true once it changes the string
  */
-bool changeOutput(beginner_tutorials::string::Request  &req,
+bool changeOutput(beginner_tutorials::string::Request &req,
          beginner_tutorials::string::Response &res) {
   message = req.new_string;
 
@@ -93,7 +93,8 @@ int main(int argc, char **argv) {
   ros::Publisher chatter_pub = n.advertise<std_msgs::String>("chatter", 1000);
 
   // service created to change the output string
-  ros::ServiceServer service = n.advertiseService("change_output", changeOutput);
+  ros::ServiceServer service = n.advertiseService("change_output",
+  changeOutput);
 
   int freq = 10;
   freq = atoi(argv[1]);
@@ -141,11 +142,12 @@ int main(int argc, char **argv) {
     chatter_pub.publish(msg);
 
     tf::Transform t;
-    t.setOrigin( tf::Vector3(0.0, 10.0, 0.0) );
+    t.setOrigin(tf::Vector3(0.0, 10.0, 0.0));
     tf::Quaternion q;
     q.setRPY(0, 0, 90);
     t.setRotation(q);
-    br.sendTransform(tf::StampedTransform(t, ros::Time::now(), "world", "talk"));
+    br.sendTransform(tf::StampedTransform(t, ros::Time::now(),
+    "world", "talk"));
 
 
     ros::spinOnce();

@@ -25,9 +25,9 @@
  * POSSIBILITY OF SUCH DAMAGE.
  */
 
+#include <listener.h>
 #include "ros/ros.h"
 #include "std_msgs/String.h"
-#include "listener.h"
 
 /**
  * @brief A callback function to print out the received messages
